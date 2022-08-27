@@ -135,7 +135,7 @@ function generate_random_genome(size::Int, max_genome_size::Int)::Genome
         end
     end
 
-    Genome(genes, antibiotics, genes_locs)
+    return Genome(genes, antibiotics, genes_locs)
 end
 
 function genome_from_sequence(genes::Vector{Gene}, max_genome_size::Int)::Genome
@@ -149,5 +149,6 @@ function genome_from_sequence(genes::Vector{Gene}, max_genome_size::Int)::Genome
             antibiotics[i] = rand(typemin(Antibiotic):typemax(Antibiotic))
         end
     end
-    Genome(genes, antibiotics, genes_locs)
+
+    return Genome(genes, antibiotics, genes_locs)
 end

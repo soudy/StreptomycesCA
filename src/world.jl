@@ -5,7 +5,7 @@ Grid2D = Matrix
 @inline function neighbours(grid::Grid2D, (i, j)::Position)::Set{Position}
     L = size(grid, 1)
     # only considering Moore for now
-    Set([
+    return Set([
          (mod1(i - 1, L), mod1(j + 1, L)),
          (i, mod1(j + 1, L)),
          (mod1(i + 1, L), mod1(j + 1, L)),
@@ -14,15 +14,15 @@ Grid2D = Matrix
          (i, mod1(j - 1, L)),
          (mod1(i - 1, L), mod1(j - 1, L)),
          (mod1(i - 1, L), j)
-         ])
+    ])
 end
 
 @inline function empty_neighbours(grid::Grid2D{Int}, pos::Position)::Set{Position}
-    empty_neighbours(grid, pos, neighbours(grid, pos))
+    return empty_neighbours(grid, pos, neighbours(grid, pos))
 end
 
 @inline function empty_neighbours(grid::Grid2D{Int}, pos::Position, neighs::Set{Position})::Set{Position}
-    Set([n for n in neighs if grid[n...] === 0])
+    return Set([n for n in neighs if grid[n...] === 0])
 end
 
 mutable struct World
@@ -38,13 +38,13 @@ mutable struct World
     params::Parameters
 
     function euclid_distance(pos_a::Position, pos_b::Vector{Int})::Float64
-        sqrt((pos_a[1] - pos_b[1])^2 + (pos_a[2] - pos_b[2])^2)
+        return sqrt((pos_a[1] - pos_b[1])^2 + (pos_a[2] - pos_b[2])^2)
     end
 
     function generate_ab_circle_sites(r_a::Int)::Set{Position}
         center = (0, 0)
-        Set([(i, j) for i in -r_a:r_a, j in -r_a:r_a
-             if euclid_distance(center, [i, j]) <= r_a])
+        return Set([(i, j) for i in -r_a:r_a, j in -r_a:r_a
+                    if euclid_distance(center, [i, j]) <= r_a])
     end
 
     function World(params::Parameters)
@@ -150,7 +150,7 @@ function ab_susceptibility_score(bacterium::Bacterium, antibiotics::Set{Antibiot
         count_ones.(site_ab .⊻ bacterium_antibiotics) for site_ab in antibiotics
     ]
 
-    sum(minimum.(dists))
+    return sum(minimum.(dists))
 end
 
 function replicate!(world::World, site::Position, candidates::Set{Position}, params::Parameters)::Union{Bacterium, Nothing}
