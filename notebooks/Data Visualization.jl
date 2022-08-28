@@ -20,7 +20,7 @@ using StreptomycesCA, JLD2
 using Plots, LaTeXStrings
 
 # ╔═╡ 65b80d2c-a5de-4ac0-a6d1-9b37828de7b1
-rd = load("../data/run1/20.jld2")["data"]
+datas = [load("../data/run1/$i.jld2")["data"] for i in 1:20]
 
 # ╔═╡ 39235129-2384-4748-8f88-414b44d7a13a
 begin
@@ -28,36 +28,37 @@ begin
 		heatmap(
 			map(b -> begin
 				if b !== 0
-					rd.bacteria_states[i][b].colony_id
+					rd.bacteria_states[1][b].colony_id
 				else
 					-2
 				end
-			end, rd.bacterium_grids[i]),
+			end, rd.bacterium_grids[1]),
 			color=[:white, palette(:rainbow, 30)...],
 			legend=false, axis=nothing
 		)
-		for i in length(rd.bacterium_grids)
+		for rd in datas
 	]
-	plot(bacteria_heatmaps..., framestyle=:box, size=(500, 500), layout=(3, 5),
+	plot(bacteria_heatmaps..., framestyle=:box, size=(2500, 500), layout=(2, 10),
 	     dpi=300)
-	# savefig("bacteria.pdf")
+	# savefig("../figures/bacteria_20_cycles.png")
+end
+
+# ╔═╡ 621ba431-c09c-46f1-b1ff-a4de5ad805e8
+begin
+	lengths = reduce(vcat, [vec(map(length, rd.ab_grids[1])) for rd in datas])
+	ab_min = minimum(lengths)
+	ab_max = maximum(lengths)
 end
 
 # ╔═╡ d05589d0-e36b-44c0-a182-f9f61bece1f1
 begin
 	ab_heatmaps = [
-		heatmap(map(ab -> begin
-			if length(ab) !== 0
-				length(ab)
-			else
-				0
-			end
-		end, i), legend=false, axis=nothing)
-		for i in [rd.ab_grids[1]]
+		heatmap(map(length, rd.ab_grids[1]), legend=false, axis=nothing)
+		for rd in datas
 	]
 
-	plot(ab_heatmaps..., framestyle=:box, size=(500, 500), layout=(3, 5), dpi=300)
-	# savefig("antibiotics.pdf")
+	plot(ab_heatmaps..., framestyle=:box, size=(2500, 500), layout=(2, 10), dpi=300)
+	# savefig("../figures/ab_density_20_cycles.png")
 end
 
 # ╔═╡ Cell order:
@@ -66,4 +67,5 @@ end
 # ╠═65b80d2c-a5de-4ac0-a6d1-9b37828de7b1
 # ╠═c8dd482c-6a96-49f1-b18c-e8333f53ab3f
 # ╠═39235129-2384-4748-8f88-414b44d7a13a
+# ╠═621ba431-c09c-46f1-b1ff-a4de5ad805e8
 # ╠═d05589d0-e36b-44c0-a182-f9f61bece1f1
